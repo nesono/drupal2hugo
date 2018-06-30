@@ -163,7 +163,7 @@ func (db Database) JoinedNodeFields(offset, count int) []*JoinedNodeDataBody {
 	sql := `select
 	    n.Nid, n.Vid, n.Type, n.Title, n.status as Published, n.Created, n.Changed, n.Comment,
 	    n.Promote, n.Sticky, nr.Body as BodyValue, nr.Teaser as BodySummary, nr.Format as BodyFormat
-	    from %snode n inner join %snode_revisions nr on n.nid = nr.nid 
+	    from %snode n inner join %snode_revision nr on n.nid = nr.nid
 	      and n.vid = nr.vid limit %d,%d`
 	s2 := fmt.Sprintf(sql, db.Prefix, db.Prefix, offset, count)
 	list, err := db.DbMap.Select(JoinedNodeDataBody{}, s2)
