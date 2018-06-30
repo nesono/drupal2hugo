@@ -27,7 +27,7 @@ package model
 import (
 	"github.com/fale/drupal2hugo/util"
 	"fmt"
-	"github.com/rickb777/gorp"
+	"github.com/go-gorp/gorp"
 )
 
 //type NodeRevision struct {
