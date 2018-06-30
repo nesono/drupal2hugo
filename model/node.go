@@ -25,7 +25,7 @@
 package model
 
 import (
-	"github.com/fale/drupal2hugo/util"
+	"github.com/nesono/drupal2hugo/util"
 	"fmt"
 	"github.com/go-gorp/gorp"
 )

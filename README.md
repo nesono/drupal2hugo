@@ -36,7 +36,7 @@ from source, which is quite easy.
 
 Of course, start by installing Go, [setting up paths](http://golang.org/doc/code.html), etc. Then:
 
-    go get github.com/fale/drupal2hugo
+    go get github.com/nesono/drupal2hugo
 
 There should be a new binary for your computer architecture called `bin/drupal2hugo`.
 
