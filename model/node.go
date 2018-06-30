@@ -192,7 +192,7 @@ type UrlAlias struct {
 }
 
 func (db Database) GetUrlAlias(nid int32) string {
-	sql := `select pid, src as Source, dst as Alias, language  from %surl_alias where src = ?`
+	sql := `select pid, source as Source, alias as Alias, language  from %surl_alias where src = ?`
 	s2 := fmt.Sprintf(sql, db.Prefix)
 	source := fmt.Sprintf("node/%d", nid)
 	list, err := db.DbMap.Select(UrlAlias{}, s2, source)
