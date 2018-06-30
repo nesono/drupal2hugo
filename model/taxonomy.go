@@ -41,8 +41,8 @@ func copyOutVocabularies(rows []interface{}) []*Vocabulary {
 
 func (db Database) JoinedTaxonomyTerms(nid int32) []*JoinedTaxonomyTerm {
 	sql := `select idx.Nid, t.Name, v.Name as Vocab
-	    from %sterm_node as idx
-	    inner join %sterm_data as t on idx.tid = t.tid
+	    from %staxonomy_index as idx
+	    inner join %staxonomy_term_data as t on idx.tid = t.tid
 	    join %staxonomy_vocabulary as v on t.vid = v.vid
 	    where idx.Nid = ?`
 	s2 := fmt.Sprintf(sql, db.Prefix, db.Prefix, db.Prefix)

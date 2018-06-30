@@ -26,11 +26,11 @@ package main
 
 import (
 	"bufio"
-	model "github.com/nesono/drupal2hugo/model"
-	util "github.com/nesono/drupal2hugo/util"
 	"flag"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	model "github.com/nesono/drupal2hugo/model"
+	util "github.com/nesono/drupal2hugo/util"
 	"io"
 	"os"
 	"path"
@@ -218,24 +218,24 @@ func writeFrontMatter(w io.Writer, node *model.JoinedNodeDataBody, alias string,
 }
 
 func writeContent(w io.Writer, node *model.JoinedNodeDataBody, emvideos []model.Emvideo) {
-	if node.BodySummary != "" {
+	if node.BodySummary.Valid && node.BodySummary.String != "" {
 		fmt.Fprintf(w, "\n# Summary:\n")
-		for _, line := range strings.Split(node.BodySummary, "\n") {
+		for _, line := range strings.Split(node.BodySummary.String, "\n") {
 			fmt.Fprintf(w, "# %s\n", line)
 		}
 	}
 
 	fmt.Fprintln(w, "\n---")
 	body := node.BodyValue
-	if strings.HasPrefix(body, node.BodySummary) {
-		body = body[len(node.BodySummary):]
-		fmt.Fprintln(w, node.BodySummary)
+	if body.Valid && node.BodySummary.Valid && strings.HasPrefix(body.String, node.BodySummary.String) {
+		body.String = body.String[len(node.BodySummary.String):]
+		fmt.Fprintln(w, node.BodySummary.String)
 		fmt.Fprintln(w, "<!--more-->")
 	}
 	for _, emvideo := range emvideos {
 		fmt.Fprintf(w, "{{< %s %s >}}", emvideo.Provider, emvideo.VideoId)
 	}
-	fmt.Fprintln(w, body)
+	fmt.Fprintln(w, body.String)
 }
 
 func toSingular(plural string) string {

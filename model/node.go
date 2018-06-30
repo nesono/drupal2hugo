@@ -28,6 +28,7 @@ import (
 	"github.com/nesono/drupal2hugo/util"
 	"fmt"
 	"github.com/go-gorp/gorp"
+	"database/sql"
 )
 
 //type NodeRevision struct {
@@ -154,17 +155,17 @@ type JoinedNodeDataBody struct {
 	//Deleted     bool
 	//RevisionId  int32
 	//Delta       int32
-	BodyValue   string
-	BodySummary string
-	BodyFormat  string
+	BodyValue   sql.NullString
+	BodySummary sql.NullString
+	BodyFormat  sql.NullString
 }
 
 func (db Database) JoinedNodeFields(offset, count int) []*JoinedNodeDataBody {
 	sql := `select
 	    n.Nid, n.Vid, n.Type, n.Title, n.status as Published, n.Created, n.Changed, n.Comment,
-	    n.Promote, n.Sticky, nr.log as BodyValue, nr.title as BodySummary, nr.status as BodyFormat
-	    from %snode n inner join %snode_revision nr on n.nid = nr.nid
-	      and n.vid = nr.vid limit %d,%d`
+	    n.Promote, n.Sticky, fdb.body_value as BodyValue, fdb.body_summary as BodySummary, fdb.body_format as BodyFormat
+	    from %snode n inner join %sfield_data_body fdb on n.nid = fdb.entity_id
+	      and n.vid = fdb.revision_id limit %d,%d`
 	s2 := fmt.Sprintf(sql, db.Prefix, db.Prefix, offset, count)
 	list, err := db.DbMap.Select(JoinedNodeDataBody{}, s2)
 	util.CheckErrFatal(err, s2)
@@ -192,7 +193,7 @@ type UrlAlias struct {
 }
 
 func (db Database) GetUrlAlias(nid int32) string {
-	sql := `select pid, source as Source, alias as Alias, language  from %surl_alias where src = ?`
+	sql := `select pid, source as Source, alias as Alias, language  from %surl_alias where source = ?`
 	s2 := fmt.Sprintf(sql, db.Prefix)
 	source := fmt.Sprintf("node/%d", nid)
 	list, err := db.DbMap.Select(UrlAlias{}, s2, source)
